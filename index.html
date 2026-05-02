@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>YouAbsorb – Learn English with YouTube</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f5f7fb;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      padding: 2rem 1rem;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: #0f172a;
+    }
+    .header p {
+      color: #475569;
+      margin-top: 0.5rem;
+    }
+
+    /* carousel container – fixed aspect ratio, fits all slides perfectly */
+    .carousel-container {
+      position: relative;
+      background: #000;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+    }
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+      height: 100%;
+      width: 100%;
+    }
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      flex-shrink: 0;
+      background: #000;
+    }
+    /* video and images fill the entire slide area without black bars */
+    .carousel-slide video,
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;    /* covers entire area, slight crop but fills completely */
+      background: #000;
+    }
+    /* slight fallback: for videos that need controls visible */
+    .carousel-slide video {
+      object-fit: cover;
+    }
+
+    /* navigation arrows */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 10;
+      font-weight: bold;
+    }
+    .carousel-btn:hover {
+      background: rgba(0,0,0,0.8);
+    }
+    .btn-prev {
+      left: 16px;
+    }
+    .btn-next {
+      right: 16px;
+    }
+
+    /* thumbnail strip – miniature previews */
+    .thumbnail-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 12px 4px;
+      scrollbar-width: thin;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .thumbnail {
+      width: 90px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      background: #eef2ff;
+      aspect-ratio: 16 / 9;
+    }
+    .thumbnail.active {
+      border-color: #3b82f6;
+      transform: scale(1.02);
+      box-shadow: 0 4px 10px rgba(59,130,246,0.3);
+    }
+    .thumbnail img, .thumbnail video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .thumbnail video {
+      background: #000;
+    }
+
+    /* info & footer */
+    .info {
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .info a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    @media (max-width: 640px) {
+      .thumbnail { width: 65px; }
+      .carousel-btn { width: 32px; height: 32px; font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>YouAbsorb</h1>
+    <p>Learn English directly from YouTube · AI chat · AI Analysis · Flashcards · Cloud sync</p>
+  </div>
+
+  <!-- main carousel with video + images -->
+  <div class="carousel-container">
+    <div class="carousel-slides" id="carouselSlides"> 
+      <!-- slide 3: AI Chat -->
+      <div class="carousel-slide" data-type="image">
+        <img src="AI Chat.png" alt="AI chat assistant (context-aware)">
+      </div>    
+      <!-- slide 1: Transcript + highlight words -->
+      <div class="carousel-slide" data-type="image">
+        <img src="Transcript.png" alt="Instant definition + highlight words">
+      </div>
+      <!-- slide 2: AI analysis -->
+      <div class="carousel-slide" data-type="image">
+        <img src="AI analysis.png" alt="AI vocabulary extraction">
+      </div>
+      <!-- slide 4: Flashcards -->
+      <div class="carousel-slide" data-type="image">
+        <img src="Flashcards.png" alt="Smart flashcards with spaced repetition">
+      </div>
+      <!-- slide 5: Login / sync -->
+      <div class="carousel-slide" data-type="image">
+        <img src="Login.png" alt="Cross-device sync with Google sign-in">
+      </div>
+      <!-- slide 6: demo video -->
+      <div class="carousel-slide" data-type="video">
+        <video controls preload="metadata" playsinline>
+          <source src="ya_video_presentation.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+    <button class="carousel-btn btn-prev" id="prevBtn">‹</button>
+    <button class="carousel-btn btn-next" id="nextBtn">›</button>
+  </div>
+
+  <!-- thumbnail strip -->
+  <div class="thumbnail-strip" id="thumbnailStrip"></div>
+
+  <!-- draft & contact info -->
+  <div class="info">
+    <p>🔹 <strong>Chrome Web Store listing (draft)</strong> – public URL after launch: 
+    <a href="https://chromewebstore.google.com/detail/fmgckmfmdgheggagdefebdhhfnejcfol" target="_blank">YouAbsorb</a></p>
+    <p>🔹 <strong>Contact & social:</strong> 
+      <a href="https://github.com/calasCosta?tab=repositories">GitHub</a> · 
+      <a href="mailto:noamicafft@gmail.com">noamicafft@gmail.com</a> · 
+    </p>
+  </div>
+</div>
+
+<script>
+  const slidesContainer = document.getElementById('carouselSlides');
+  const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const thumbnailStrip = document.getElementById('thumbnailStrip');
+
+  let currentIndex = 0;
+  const totalSlides = slides.length;
+
+  // build thumbnails
+  slides.forEach((slide, idx) => {
+    const type = slide.dataset.type;
+    const thumb = document.createElement('div');
+    thumb.className = 'thumbnail';
+    if (idx === currentIndex) thumb.classList.add('active');
+
+    if (type === 'video') {
+      const vid = document.createElement('video');
+      vid.muted = true;
+      vid.preload = 'metadata';
+      vid.src = 'ya_video_presentation.mp4';
+      vid.addEventListener('loadeddata', () => {
+        vid.currentTime = 1; // show first frame
+      });
+      thumb.appendChild(vid);
+    } else {
+      const img = document.createElement('img');
+      const slideImg = slide.querySelector('img');
+      if (slideImg) {
+        img.src = slideImg.src;
+        img.alt = slideImg.alt || 'screenshot';
+      }
+      thumb.appendChild(img);
+    }
+
+    thumb.addEventListener('click', () => {
+      goToSlide(idx);
+      // pause any playing video in the current slide when moving away
+      const activeSlide = slides[currentIndex];
+      if (activeSlide.dataset.type === 'video') {
+        const oldVideo = activeSlide.querySelector('video');
+        if (oldVideo) oldVideo.pause();
+      }
+    });
+    thumbnailStrip.appendChild(thumb);
+  });
+
+  function goToSlide(index) {
+    currentIndex = (index + totalSlides) % totalSlides;
+    slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+    updateThumbnailActive();
+  }
+
+  function updateThumbnailActive() {
+    const thumbs = document.querySelectorAll('.thumbnail');
+    thumbs.forEach((thumb, i) => {
+      if (i === currentIndex) thumb.classList.add('active');
+      else thumb.classList.remove('active');
+    });
+  }
+
+  function nextSlide() { goToSlide(currentIndex + 1); }
+  function prevSlide() { goToSlide(currentIndex - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  // initial transform
+  slidesContainer.style.transform = 'translateX(0)';
+  // pause all video thumbnails to avoid overlapping sound
+  document.querySelectorAll('.thumbnail video').forEach(v => v.pause());
+</script>
+</body>
+</html>
